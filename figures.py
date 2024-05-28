@@ -1163,13 +1163,17 @@ def fig_7_initiator_receiver_consistency():
 
 
 def fig_8_top_receivers_params():
+
+
     start_time = time.time()
     fp_parsed_ad_chains = CA_DEFAULT_HTTP_REQUESTS_CHAINS_PATH
     fp_ana_domains = EASY_PRIVACY_LIST_DOMAINS_PATH
     df_parsed_ad_chains = pd.read_csv(fp_parsed_ad_chains, sep = '\t')
     df_ana_domains = pd.read_csv(fp_ana_domains, sep ='\t')
     ana_list = df_ana_domains['domain'].tolist()
-    
+
+    matplotlib.rcParams["pdf.fonttype"] = 42
+    matplotlib.rcParams["ps.fonttype"] = 42    
     FIG_THIRD_WIDTH = (4, 2.4)
 
     df_default_consent_urls = df_parsed_ad_chains[df_parsed_ad_chains['is_consent_signal_present']==True]
