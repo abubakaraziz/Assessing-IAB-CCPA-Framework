@@ -57,7 +57,7 @@ Good Internet Connection to download the dataset
    unzip data.zip
    ```
 4) Install dependencies using ```pip3 install -r requirements.txt```.
-5) Run ```python3 generate_fig_tables -f generate_fig_tables```
+5) Run ```python3 figures.py -f generate_fig_tables```
 
 We believe the code should work without creating any virtual environment if you use python 3.10.12 version (and other latest version of python should work too). However, if you want or there are some issues, feel free to create python virtual environment by following these instructions [here](https://docs.python.org/3/library/venv.html). 
 
