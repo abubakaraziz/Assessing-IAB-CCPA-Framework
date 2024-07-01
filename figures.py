@@ -290,12 +290,12 @@ def fig_2_uspapi_category():
     plt.savefig(fp_usprivacy_categories, bbox_inches='tight')
     print(f"Function took {(time.time() - start_time)/60} minutes") 
 
-    """
+    """ 
     Total Number of websites among Top 10k where we get categories from the Fortiguard 9897(98.97%)
     Total Number of categories detected among top 10k 75
     Total Number of websites where we detect the presence of USP API 821
     We detected USP API among 821, we were able to successfully get category among 821 100.0% websites
-    Function took 0.012590587139129639 minutes
+    Focus on Top 10 Categories that cover 646(78.68453105968331%)
     """
 
 
@@ -477,7 +477,8 @@ def generate_uspapi_cookie_together_numbers():
     Number of Websites with recommended usprivacy cookie only 15
     Number of Websites where USPAPI is present only 438
     Number of Websites where USPAPI and recommended usprivacy both are Present 267
-    
+    Total Number of Websites where we detected the presence of both recommended US Privacy Cookie and API 720
+    Function took 0.0032371004422505696 minutes
     """
 
     print(f"Function took {(time.time() - start_time)/60} minutes") 
@@ -690,9 +691,10 @@ def fig_5_uspapi_consistency_read():
     print(f' We found  {len(df_thirdparties_api_read_merged)} ({percent_reading_USP_API}%)A&A resources reading USP ')
     print(f'Not Reading script {100-percent_reading_USP_API}')
 
-    ##########Very few parties appear more than 100 times.Only two times they appear twice 
+    ##########Very few parties appear more than 100 times. Only two times they appear twice 
     df_thirdparties_api_read_merged = df_thirdparties_api_read_merged[df_thirdparties_api_read_merged['percent_read']<=100]
-
+    n_read_percent = 100* len(df_thirdparties_api_read_merged[df_thirdparties_api_read_merged['percent_read']==100])/len(df_thirdparties_api_read_merged)
+    print(f'We find that {n_read_percent} of these A&A domains read the USP API consistently, whenever they load')
     #PLOTING CDF
     FIG_THIRD_WIDTH = (5, 2.4)
     matplotlib.rcParams["pdf.fonttype"] = 42
@@ -708,7 +710,7 @@ def fig_5_uspapi_consistency_read():
         plt.gca().spines[spine].set_visible(False)
 
     sns.ecdfplot(data=df_thirdparties_api_read_merged, x="percent_read", ax = ax, stat='percent')
-
+    
     ax.set_ylabel('CDF')
     ax.set_xlabel('Percentage of USP API Reads by A&A JavaScript')
     ax.yaxis.grid(True)
@@ -717,9 +719,12 @@ def fig_5_uspapi_consistency_read():
     plt.tight_layout()
     plt.savefig(FIG_PATH + "CA_tainted_api_read_cdf.pdf",bbox_inches='tight')
     """
-    We detect the presence of total of 2631 A&A resources which we found  258 (9.806157354618016%)A&A resources reading USP 
-    Not Reading script 90.19384264538198
-    Function took 0.8507643898328145 minutes
+    Generating Figure 5
+    We detect the presence of total of 2631 A&A Javascript resources across 10k websites.
+    We found  257 (9.76814899277841%)A&A resources reading USP 
+    Not Reading script 90.2318510072216
+    We find that 48.627450980392155 of these A&A domains read the USP API consistently, whenever they load
+    Function took 0.6709295630455017 minutes
     """
 
     print(f"Function took {(time.time() - start_time)/60} minutes") 
@@ -734,7 +739,6 @@ def fig_6_usprivacycookie_writing():
     df_cookie_set = df_cookie_set[df_cookie_set['is_consent_signal'] == True] 
     df_cookie_set['cookiesetter_domains'] = df_cookie_set.arguments.apply(get_cookie_setter_domains)
     df_cookie_set = df_cookie_set.apply(is_first_party_domains, axis = 1)
-    print(df_cookie_set.info())
     #Filter First Party Cookies Only
     df_cookie_set =df_cookie_set[df_cookie_set['is_first_party_domain']==True]
     df_cookie_set = df_cookie_set.apply(domain_to_cmp_mapping, axis = 1)
@@ -927,21 +931,18 @@ def generate_default_chain_numbers():
     n_total_chains_default_api_presence = df_CA_default_mergedapi_presence.chainid.nunique()
     percent_chains_not_rooted_publishers_uspapi = 100*(n_total_chains_default- n_total_chains_default_api_presence)/ n_total_chains_default
     n_total_consent_chains_api_presence = df_default_consent_urls_api_presence.chainid.nunique()
-    n_total_consent_urls_default_api_presence = len(df_default_consent_urls_api_presence)
     print(f'In CA default crawl, we observe {n_consent_signal_urls} HTTP requests that contain the USP String')
     print(f'Total Number of Uniq Ad-Chains in CA Default {n_total_chains_default}')
     print(f'Total Number of Ad-chains in CA Default 821 websites {n_total_chains_default_api_presence}')
     print(f'Percentage of  Chains in websites that donot adopt USP API {percent_chains_not_rooted_publishers_uspapi}%')
     print(f'Total Number of uniq Ad-chains in CA Default that contains usp url {n_total_consent_chains_api_presence}({n_total_consent_chains_api_presence*100/n_total_chains_default_api_presence}%)')
 
-    print(f'Total Number of consent USP urls restricted to 821 USP API websites {n_total_consent_urls_default_api_presence}')
-
 
     #Number of chains that contain exactly one USP signal in 821 USP API websites 
     n_chains_with_one_usp = df_default_consent_urls_api_presence.groupby(['chainid'])['url'].size().reset_index(name='Count')
     n_chains_with_one_usp = len(n_chains_with_one_usp[n_chains_with_one_usp['Count']==1])
-    percent_n_chains_one_usp = 100*n_chains_with_one_usp/n_total_consent_urls_default_api_presence
-    print(f'Total of these chains containted exactly one {n_chains_with_one_usp} {percent_n_chains_one_usp}%')
+    percent_n_chains_one_usp = 100*n_chains_with_one_usp/n_total_consent_chains_api_presence
+    print(f'Total of these chains containted exactly one {n_chains_with_one_usp} {percent_n_chains_one_usp}% out of {n_total_consent_chains_api_presence} chains')
 
     #To calculate Median merge with original chains first, get last element which contains pos, subtract 1 from pos (since we want to count edges but our chain node starts from 1).
     df_default_consent_urls_api_presence =  df_default_consent_urls_api_presence.drop_duplicates(subset=['chainid'])
@@ -958,14 +959,15 @@ def generate_default_chain_numbers():
 
 
     """
+    Total Number of URLs in default with usp in default 319269
     In CA default crawl, we observe 319269 HTTP requests that contain the USP String
     Total Number of Uniq Ad-Chains in CA Default 3102021
     Total Number of Ad-chains in CA Default 821 websites 1214540
+    Percentage of  Chains in websites that donot adopt USP API 60.84681567275012%
     Total Number of uniq Ad-chains in CA Default that contains usp url 218541(17.993726019727635%)
-    Total Number of consent USP urls restricted to 821 USP API websites 282320
-    Total of these chains containted exactly one 171866 60.87631056956645%
+    Total of these chains containted exactly one 171866 78.64245153083404% out of 218541 chains
     Median Length of Chains with USP URLs 5.0
-    Function took 1.3414143164952597 minutes
+    Function took 1.3483649134635924 minutes
     """
 
 
@@ -1036,7 +1038,7 @@ def fig_7_initiator_receiver_consistency():
 
 
     #Output
-    fp_fig_cdf_pairs_usp  = FIG_PATH +" fig_fraction_pairs_usp.pdf" 
+    fp_fig_cdf_pairs_usp  = FIG_PATH +"fig_fraction_pairs_usp.pdf" 
 
     """
     Consider all URLs chains restricted to 821 websites where we detect USP API in the default crawl.
@@ -1075,6 +1077,8 @@ def fig_7_initiator_receiver_consistency():
     
     df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels = df_CA_default_april2023_initiator_receiver_mergedapi_presence[df_CA_default_april2023_initiator_receiver_mergedapi_presence['is_tracking_pixel']==True]
     df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels_lastnode = df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels.sort_values('pos', ascending=False).drop_duplicates(['chainid'])
+
+    ##Filter Out tracking pixel pairs with consent signal
     df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels_lastnode_consent_signals = df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels_lastnode[df_CA_default_april2023_initiator_receiver_mergedapi_presence_trackingpixels_lastnode['is_consent_signal_present']==True]
 
 
@@ -1123,7 +1127,7 @@ def fig_7_initiator_receiver_consistency():
 
     ax.legend( bbox_to_anchor=(0.50, 1.05),fontsize = 8)
     ax.set_ylabel('CDF')
-    ax.set_xlabel('Percentage of Unique Chains with USP per Pair')
+    ax.set_xlabel('Percentage of Chains with USP per Pair')
     ax.yaxis.grid(True)
     ax.xaxis.grid(False)
     ax.set_axisbelow(True)
@@ -1134,6 +1138,8 @@ def fig_7_initiator_receiver_consistency():
     print(f"Function took {(time.time() - start_time)/60} minutes") 
 
     """
+    Total Number of Ad-Chains restricted to 821 websites where API is present 1214540
+    Total Number of URLs containing USP parameter restricted to 821 websites where we detect usp api 282320
     Consider all A&A Pairs
     Total number of same USP pairs in 821 websites have (40331 chains ) 85 pairs
     Total Number of Different USP Pairs in 821 websites (140809 chains) 3203 pairs
@@ -1393,7 +1399,6 @@ def fig_9_http_requests_optout():
     for i, crawl in enumerate(crawls):
         #print(f"Plotting {crawl}")
         values = [group[crawl].mean() for name, group in grouped]#for every third party, get opt-out percentage. we can use mean because there is only one value for every third party
-        q
         #for name,group in grouped:
             #print(f"Third Party {name} + Count: {group[crawl].mean()}" )
         ax[1].bar([pos + i * bar_width for pos in x], values, width=bar_width, label=crawl)
