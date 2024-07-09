@@ -1,8 +1,9 @@
 # Johnny Still Can’t Opt-out: Assessing the IAB CCPA Compliance Framework?
 
 
+This repository contains the data and code to produce figures and analysis that appeared in the paper "Johnny Still Can’t Opt-out: Assessing the IAB CCPA Compliance Framework?" by Muhammad Abu Bakar Aziz and Christo Wilson, accepted at the Proceedings of the Privacy Enhancing Technologies Symposium (PoPETS) 2024. In this study, we take a deep dive into the IAB CCPA Compliance Framework to measure end-to-end flows of consent information and better understand why opt-out signals are not being honored
 
-This repository contains the data and code to produce figures and analysis that appeared in the paper "Johnny Still Can’t Opt-out: Assessing the IAB CCPA Compliance Framework?" by Muhammad Abu Bakar Aziz and Christo Wilson, accepted at the Proceedings of the Privacy Enhancing Technologies Symposium (PoPETS) 2024. In this study, we take a deep dive into the IAB CCPA Compliance Framework to measure end-to-end flows of consent information and better understand why opt-out signals are not being honored.
+Full research paper is available here:  https://petsymposium.org/popets/2024/popets-2024-0120.pdf
 
 ## Data
  Download the dataset using this [link](https://personalization.ccs.neu.edu/static/archive/data.zip). This will download `data.zip` which is about 2.5 GB. 
@@ -45,7 +46,6 @@ These artifacts were tested on our lab cluster with Ubuntu 22.04.4 LTS, 189 GB R
 Any good processor (I5 or I7 processor)
 32 GB Ram
 40 GB Disk Space
-Good Internet Connection to download the dataset
 ```
 
 
@@ -68,7 +68,7 @@ python3 -m venv iab_venv
 This will create a directory named `iab_venv` in the current directory, containing the virtual environment.
 Activate the virtual environment by running:
 ```
-source iab/bin/activate
+source iab_ven/bin/activate
 ```
 Once the virtual environment is activated, you can install dependencies using `pip3`. For example:
 ```
